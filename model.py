@@ -4,8 +4,8 @@ import numpy as np
 from sklearn.metrics import confusion_matrix, classification_report
 
 
-def train_model(df):
-    model = IsolationForest(contamination=0.00172, random_state=42)
+def train_model(df, contamination=0.00172):
+    model = IsolationForest(contamination=contamination, random_state=42)
     model.fit(df)
     return model
 
