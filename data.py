@@ -2,14 +2,34 @@ import pandas as pd
 import plotly.express as px
 from sklearn.preprocessing import StandardScaler
 
+def load_new_data():
+    df = pd.read_csv('card_transdata.csv')
+    
+    scaler = StandardScaler()
+    cols_to_scale = ['distance_from_home', 
+                     'distance_from_last_transaction',
+                     'ratio_to_median_purchase_price']
+    
+    df[cols_to_scale] = scaler.fit_transform(df[cols_to_scale])
+    return df
+    
+
+
 def load_data():
     df = pd.read_csv('creditcard.csv')
     
+    # Engineer features before scaling and dropping
+    df['hour'] = (df['Time'] % 86400) // 3600
+    df['amount_zscore'] = (df['Amount'] - df['Amount'].mean()) / df['Amount'].std()
+    df['is_small_amount'] = (df['Amount'] < 10).astype(int)
+    df['is_large_amount'] = (df['Amount'] > 1000).astype(int)
+    
+    # Scale Amount and Time
     scaler = StandardScaler()
     df['Amount_Scaled'] = scaler.fit_transform(df[['Amount']])
     df['Time_Scaled'] = scaler.fit_transform(df[['Time']])
     df = df.drop(['Amount', 'Time'], axis=1)
-    df[['Amount_Scaled', 'Time_Scaled']].head()
+    
     return df
 
 def explore_data(df):
