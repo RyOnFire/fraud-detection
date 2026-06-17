@@ -24,16 +24,18 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
     v_cols = [f'V{i}' for i in range(1, 29)]
-    missing = [col for col in v_cols if col not in df.columns]
+    required_cols = v_cols + ['Amount', 'Time']
+    missing = [col for col in required_cols if col not in df.columns]
 
     if missing:
         st.warning("We don't recognize this CSV format. Let's map your columns!")
 
         target_col = st.selectbox("Which column is the fraud/target label?", df.columns)
+        exclude_from_features = ['Prediction', 'Fraud_Probability']
         feature_cols = st.multiselect(
             "Select columns to use for detection",
             [col for col in df.columns if col != target_col],
-            default=[col for col in df.columns if col != target_col]
+            default=[col for col in df.columns if col != target_col and col not in exclude_from_features]
         )
 
         if st.button("Train Model on My Data"):
