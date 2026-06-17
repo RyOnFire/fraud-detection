@@ -1,6 +1,3 @@
 creditcard.csv
 __pycache__/
-.env
-xgb_model.pkl
-rf_model.pkl
 card_transdata.csv
