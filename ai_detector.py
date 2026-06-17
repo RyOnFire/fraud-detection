@@ -29,6 +29,16 @@ def detect_columns(df):
     )
     
     text = response.choices[0].message.content.strip()
-    text = text.replace('```json', '').replace('```', '')
-    result = json.loads(text)
+    text = text.replace('```json', '').replace('```', '').strip()
+    
+    try:
+        result = json.loads(text)
+    except json.JSONDecodeError:
+        # Fallback to first columns if AI fails
+        result = {
+            'amount_col': df.columns[0],
+            'time_col': df.columns[0],
+            'target_col': 'None'
+        }
+    
     return result
